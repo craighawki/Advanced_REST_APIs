@@ -1,30 +1,26 @@
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
+from flask import request
 from flask_jwt_extended import (
     jwt_required,
     fresh_jwt_required,
 )
+from marshmallow import ValidationError
 from models.item import ItemModel
+from schemas.item import ItemSchema
 
-BLANK_ERROR ="'{}' cannot be blank!"
 NAME_ALREADY_EXISTS = "An item with name '{}' already exists."
 ERROR_INSERTING = "An error occurred while inserting the item."
 ITEM_NOT_FOUND = "Item not found."
 ITEM_DELETED = "Item deleted."
 
-class Item(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument(
-        "price", type=float, required=True, help=BLANK_ERROR.format("price")
-    )
-    parser.add_argument(
-        "store_id", type=int, required=True, help=BLANK_ERROR.format("store_id")
-    )
+item_schema = ItemSchema
 
+class Item(Resource):
     @classmethod
     def get(cls, name: str):
         item = ItemModel.find_by_name(name)
         if item:
-            return item.json(), 200
+            return item_schema.dump(item), 200
         return {"message": ITEM_NOT_FOUND}, 404
 
     @classmethod
@@ -35,8 +31,8 @@ class Item(Resource):
                 "message": NAME_ALREADY_EXISTS.format(name)
             }, 400
 
-        data = Item.parser.parse_args()
-
+        item_json = request.get_json() # price, store_id
+        item_json["name"] = name
         item = ItemModel(name, **data)
 
         try:
