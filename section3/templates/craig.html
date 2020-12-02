@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Fancy Webpage</title>
+    <link href="{{url_for('static', filename='craig.css')}}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<body>
+
+  <div class="container-fluid">
+    <div class="jumbotron text-center full-height">
+      <h1>This is sweet</h1>
+      <p><em>This web page is really working < {{ email }} >.</em></p>
+    </div>
+
+    <footer class="text-center">
+      <hr>
+      <p><a href="http://parismatch.com" target="_blank">Craig</a></p>
+    </footer>
+  </div>
+
+</body>
+</html>
